@@ -1,0 +1,18 @@
+timestamp_utc,text,sentiment,confidence,self_harm_flag
+2025-10-26T13:50:22.612746+00:00,I feel very sad,negative,0.9992544054985046,1
+2025-10-26T13:50:41.293877+00:00,I feel that I am about to cry,negative,0.5034651160240173,1
+2025-10-26T13:50:51.311606+00:00,I feel very happy today,positive,0.9997641444206238,0
+2025-10-26T13:51:05.336652+00:00,I want to kill myself,negative,0.9149201512336731,1
+2025-10-26T14:02:12.644098+00:00,I am happy,positive,0.9997807145118713,0
+2025-10-26T14:02:27.654450+00:00,I am very angry,negative,0.999062716960907,1
+2025-10-26T14:02:54.004816+00:00,I feel like in myself,positive,0.9910513162612915,0
+2025-10-26T14:05:48.583904+00:00,I feel empty and I'm so tired of everything. Nothing helps anymore.,negative,0.9994335770606995,1
+2025-10-26T14:05:53.588186+00:00,I feel empty and I'm so tired of everything. Nothing helps anymore.,negative,0.9994335770606995,1
+2025-10-26T14:06:33.715663+00:00,I want to hit someone,negative,0.6319259405136108,0
+2025-10-27T04:30:53.782887+00:00,I feel very sad,negative,0.9992544054985046,1
+2025-10-27T12:17:53.857798+00:00,I feel very sad,negative,0.9992544054985046,1
+2025-10-27T12:19:19.110044+00:00,I feel very happy,positive,0.9997599720954895,0
+2025-10-27T12:19:29.523267+00:00,I feel very sad,negative,0.9992544054985046,1
+2025-10-27T12:19:47.768320+00:00,I don't feel very well,neutral,0.9993379712104797,0
+2025-10-27T12:20:01.377056+00:00,I hate myself I hate myself,negative,0.9983207583427429,1
+2025-10-27T12:20:17.358461+00:00,I am very happy right now,positive,0.9997397065162659,0
