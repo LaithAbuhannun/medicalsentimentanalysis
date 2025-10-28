@@ -1,0 +1,611 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Mental Health Sentiment Monitor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #1e253a;
+      --card-border: #2c344f;
+      --text-main: #f8fafc;
+      --text-dim: #a4aecb;
+      --accent: #6366f1;
+      --danger: #ef4444;
+      --safe: #10b981;
+      --radius-lg: 16px;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text-main);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Inter", Roboto, "Segoe UI", Arial, sans-serif;
+      max-width: 1200px;
+      margin: 32px auto;
+      padding: 0 16px 64px;
+      line-height: 1.4;
+    }
+
+    h1 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-main);
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    h1 span.badge {
+      background: rgba(99, 102, 241, 0.15);
+      color: var(--accent);
+      font-size: 0.7rem;
+      font-weight: 500;
+      padding: 2px 8px;
+      border-radius: 999px;
+    }
+
+    .disclaimer {
+      color: var(--text-dim);
+      font-size: 0.8rem;
+      max-width: 800px;
+      margin-top: 4px;
+    }
+
+    .grid-main {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 24px;
+      flex-wrap: wrap;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 16px 20px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+    }
+
+    .card h2 {
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin: 0 0 8px;
+      color: var(--text-main);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .card small {
+      color: var(--text-dim);
+      font-weight: 400;
+      font-size: 0.7rem;
+    }
+
+    label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text-main);
+      margin-bottom: 6px;
+      margin-top: 12px;
+    }
+
+    textarea {
+      width: 98%;
+      min-height: 120px;
+      background: #0f172a;
+      color: var(--text-main);
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+      padding: 12px;
+      font-size: 0.9rem;
+      resize: vertical;
+      outline: none;
+    }
+
+    textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(99,102,241,.3);
+    }
+
+    button.action {
+      background: var(--accent);
+      color: white;
+      border: 0;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 10px 14px;
+      margin-top: 16px;
+      cursor: pointer;
+    }
+
+    button.action:active {
+      transform: scale(0.98);
+    }
+
+    .result-block {
+      background: rgba(15,23,42,0.6);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 0.85rem;
+      margin-top: 8px;
+      white-space: pre-line;
+      color: var(--text-main);
+      min-height: 70px;
+    }
+
+    .metric-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-top: 32px;
+    }
+
+    .metric-card {
+      flex: 1 1 160px;
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 16px 20px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+      min-width: 150px;
+    }
+
+    .metric-label {
+      color: var(--text-dim);
+      font-size: 0.7rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+
+    .metric-value {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-top: 4px;
+    }
+
+    .metric-sub {
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      margin-top: 2px;
+    }
+
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    canvas {
+      width: 100%;
+      background: rgba(0,0,0,0);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 24px;
+      font-size: 0.8rem;
+    }
+
+    table thead {
+      background: rgba(99,102,241,0.08);
+    }
+
+    table th {
+      text-align: left;
+      font-weight: 500;
+      color: var(--text-dim);
+      padding: 10px 12px;
+      font-size: 0.7rem;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    table td {
+      padding: 12px;
+      border-bottom: 1px solid var(--card-border);
+      color: var(--text-main);
+      vertical-align: top;
+      line-height: 1.4;
+    }
+
+    .risk-flag {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(239,68,68,0.15);
+      color: var(--danger);
+    }
+
+    .risk-ok {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(16,185,129,0.15);
+      color: var(--safe);
+    }
+
+    @media (max-width: 850px) {
+      .grid-main { grid-template-columns: 1fr; }
+      .charts-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <h1>
+    Mental Health Sentiment Monitor
+    <span class="badge">prototype</span>
+  </h1>
+  <div class="disclaimer">
+    This tool highlights emotional tone and potential self-harm language in client text.
+    It supports clinicians. It does not replace professional judgment or emergency services.
+  </div>
+
+  <!-- INPUT + RESULT -->
+  <section class="grid-main">
+    <!-- LEFT: Input -->
+    <div class="card">
+        <h2>
+          Client / Patient Statement
+          <small>Paste text or record speech, then analyze.</small>
+        </h2>
+      
+        <label for="userText">Text</label>
+        <textarea id="userText" placeholder="Example: I don't think I can keep going like this anymore..."></textarea>
+      
+        <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin-top:12px;">
+          <button class="action" id="analyzeBtn">Analyze</button>
+      
+          <button class="action" id="recordBtn" style="background:#334155;">
+            🎙 Start Voice
+          </button>
+      
+          <div id="recordStatus"
+               style="font-size:0.7rem; color:var(--text-dim); min-width:120px;">
+            Idle
+          </div>
+        </div>
+      
+        <div style="margin-top:16px; font-size:0.7rem; color:var(--text-dim); line-height:1.4;">
+          Not for crisis response. If someone is in immediate danger,
+          contact emergency / crisis services.
+        </div>
+      </div>
+      
+
+    <!-- RIGHT: Result -->
+    <div class="card">
+      <h2>
+        Analysis Result
+        <small>Model sentiment + risk assessment</small>
+      </h2>
+
+      <div class="result-block" id="resultBox">
+        No analysis yet.
+      </div>
+    </div>
+  </section>
+
+  <!-- METRICS CARDS -->
+  <section class="metric-row" id="metricsRow">
+    <div class="metric-card">
+      <div class="metric-label">Total Analysed</div>
+      <div class="metric-value" id="m_total">0</div>
+      <div class="metric-sub">All time</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Negative Rate</div>
+      <div class="metric-value" id="m_negative_rate">0%</div>
+      <div class="metric-sub">% entries classed negative</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Self-harm Alerts</div>
+      <div class="metric-value" id="m_alerts">0</div>
+      <div class="metric-sub">Detected risky language</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Latest Risk</div>
+      <div class="metric-value" id="m_latest_risk">OK</div>
+      <div class="metric-sub">Most recent entry</div>
+    </div>
+  </section>
+
+  <!-- CHARTS -->
+  <section class="charts-grid">
+    <div class="card">
+      <h2>Sentiment Distribution <small>overall</small></h2>
+      <canvas id="sentimentChart" height="200"></canvas>
+    </div>
+    <div class="card">
+      <h2>Self-harm Alerts <small>by day</small></h2>
+      <canvas id="riskChart" height="200"></canvas>
+    </div>
+  </section>
+
+  <!-- RECENT TABLE -->
+  <section class="card" style="margin-top:24px;">
+    <h2>
+      Recent Sessions
+      <small>Latest analysed statements</small>
+    </h2>
+    <table id="recentTable">
+      <thead>
+        <tr>
+          <th width="150">Timestamp (UTC)</th>
+          <th>Snippet</th>
+          <th width="100">Sentiment</th>
+          <th width="80">Risk</th>
+        </tr>
+      </thead>
+      <tbody id="recentBody">
+        <!-- rows injected by JS -->
+      </tbody>
+    </table>
+  </section>
+
+  <script>
+    // Your Flask backend base URL
+    const API_BASE = "http://127.0.0.1:5001";
+
+    // ----- Speech recognition / mic capture setup -----
+
+// Web Speech API is Chromium-only (Chrome, Edge, Brave). Safari/Firefox won't have it.
+const SpeechRecognition =
+  window.SpeechRecognition || window.webkitSpeechRecognition;
+
+const recordBtn = document.getElementById("recordBtn");
+const recordStatus = document.getElementById("recordStatus");
+
+let recognizer = null;
+let isRecording = false;
+
+if (!SpeechRecognition) {
+  // Browser does NOT support speech recognition
+  console.warn("SpeechRecognition API not available in this browser.");
+  if (recordBtn) {
+    recordBtn.disabled = true;
+    recordBtn.style.opacity = "0.5";
+    recordBtn.style.cursor = "not-allowed";
+    recordBtn.style.background = "#4b5563"; // gray-ish
+    recordBtn.textContent = "🎙 Voice Not Supported";
+  }
+  if (recordStatus) {
+    recordStatus.textContent = "Voice capture needs Chrome/Edge on localhost";
+  }
+} else {
+  // Browser DOES support speech recognition
+  recognizer = new SpeechRecognition();
+  recognizer.lang = "en-US";
+  recognizer.interimResults = true;   // stream partial text
+  recognizer.continuous = true;       // keep listening until stop
+
+  let liveTranscript = "";
+
+  recognizer.onstart = () => {
+    recordStatus.textContent = "Listening...";
+  };
+
+  recognizer.onend = () => {
+    // Fires when recognition stops
+    recordStatus.textContent = "Idle";
+    isRecording = false;
+    recordBtn.textContent = "🎙 Start Voice";
+    recordBtn.style.background = "#334155"; // back to default
+  };
+
+  recognizer.onerror = (e) => {
+    console.error("SpeechRecognition error:", e);
+    recordStatus.textContent = "Mic error / blocked";
+    isRecording = false;
+    recordBtn.textContent = "🎙 Start Voice";
+    recordBtn.style.background = "#334155";
+  };
+
+  recognizer.onresult = (event) => {
+    // Merge all transcripts so far
+    let finalText = "";
+    for (let i = 0; i < event.results.length; i++) {
+      finalText += event.results[i][0].transcript + " ";
+    }
+    liveTranscript = finalText.trim();
+
+    // Push into textarea so user can review/edit
+    userText.value = liveTranscript;
+  };
+
+  // Button behavior: toggle start/stop
+  recordBtn.addEventListener("click", () => {
+    if (!isRecording) {
+      // start listening
+      try {
+        recognizer.start();
+        isRecording = true;
+        recordBtn.textContent = "⏹ Stop";
+        recordBtn.style.background = "#ef4444"; // red while live
+        recordStatus.textContent = "Listening...";
+      } catch (err) {
+        console.error("SpeechRecognition start failed:", err);
+        recordStatus.textContent = "Mic blocked?";
+      }
+    } else {
+      // stop listening
+      recognizer.stop(); // onend() will run after this
+    }
+  });
+}
+
+
+    const resultBox = document.getElementById("resultBox");
+    const analyzeBtn = document.getElementById("analyzeBtn");
+    const userText = document.getElementById("userText");
+
+    // metric DOM nodes
+    const m_total = document.getElementById("m_total");
+    const m_negative_rate = document.getElementById("m_negative_rate");
+    const m_alerts = document.getElementById("m_alerts");
+    const m_latest_risk = document.getElementById("m_latest_risk");
+
+    // chart refs
+    let sentimentChart;
+    let riskChart;
+
+    function renderCharts() {
+      const sctx = document.getElementById("sentimentChart").getContext("2d");
+      sentimentChart = new Chart(sctx, {
+        type: "bar",
+        data: {
+          labels: ["Positive", "Neutral", "Negative"],
+          datasets: [{
+            label: "Count",
+            data: [0, 0, 0]
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { display: false } }
+        }
+      });
+
+      const rctx = document.getElementById("riskChart").getContext("2d");
+      riskChart = new Chart(rctx, {
+        type: "line",
+        data: {
+          labels: [],
+          datasets: [{
+            label: "Self-harm Alerts",
+            data: [],
+            tension: 0.25
+          }]
+        },
+        options: {
+          responsive: true
+        }
+      });
+    }
+
+    async function refreshMetrics() {
+      // 1. summary metrics
+      const sumRes = await fetch(API_BASE + "/metrics/summary");
+      const summary = await sumRes.json();
+
+      m_total.textContent = summary.total ?? 0;
+      m_negative_rate.textContent = summary.negative_rate_percent ?? "0%";
+      m_alerts.textContent = summary.self_harm_alerts ?? 0;
+      m_latest_risk.textContent = summary.latest_risk ?? "OK";
+
+      // 2. sentiment distribution chart
+      if (sentimentChart) {
+        sentimentChart.data.datasets[0].data = [
+          summary.positive_count || 0,
+          summary.neutral_count || 0,
+          summary.negative_count || 0
+        ];
+        sentimentChart.update();
+      }
+
+      // 3. timeseries chart
+      const tsRes = await fetch(API_BASE + "/metrics/timeseries");
+      const series = await tsRes.json();
+
+      if (riskChart) {
+        riskChart.data.labels = series.map(d => d.date);
+        riskChart.data.datasets[0].data = series.map(d => d.self_harm_alerts);
+        riskChart.update();
+      }
+
+      // 4. recent table
+      const recRes = await fetch(API_BASE + "/sessions/recent");
+      const recents = await recRes.json();
+
+      const tbody = document.getElementById("recentBody");
+      tbody.innerHTML = "";
+      recents.forEach(r => {
+        const tr = document.createElement("tr");
+
+        const tdTime = document.createElement("td");
+        tdTime.textContent = r.timestamp_utc;
+
+        const tdText = document.createElement("td");
+        tdText.textContent = r.text_snippet;
+
+        const tdSent = document.createElement("td");
+        tdSent.textContent =
+          r.sentiment + ` (${(r.confidence * 100).toFixed(1)}%)`;
+
+        const tdRisk = document.createElement("td");
+        if (r.self_harm_flag) {
+          tdRisk.innerHTML = `<span class="risk-flag">ALERT</span>`;
+        } else {
+          tdRisk.innerHTML = `<span class="risk-ok">OK</span>`;
+        }
+
+        tr.appendChild(tdTime);
+        tr.appendChild(tdText);
+        tr.appendChild(tdSent);
+        tr.appendChild(tdRisk);
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    analyzeBtn.addEventListener("click", async () => {
+      const textVal = userText.value.trim();
+      if (!textVal) {
+        resultBox.textContent = "Please enter text first.";
+        return;
+      }
+
+      resultBox.textContent = "Analyzing...";
+
+      const r = await fetch(API_BASE + "/analyze", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: textVal })
+      });
+
+      const data = await r.json();
+
+      if (!r.ok) {
+        resultBox.textContent = data.error || "Server error.";
+        return;
+      }
+
+      const riskStr = data.self_harm_flag
+        ? "⚠ RISK DETECTED"
+        : "No immediate self-harm language";
+
+      const flaggedTerms = (data.flagged_terms && data.flagged_terms.length > 0)
+        ? data.flagged_terms.join(", ")
+        : "None";
+
+      resultBox.textContent =
+        "Sentiment: " + data.sentiment + "\n" +
+        "Confidence: " + (data.confidence * 100).toFixed(2) + "%\n" +
+        "Self-harm: " + riskStr + "\n" +
+        "Flagged terms: " + flaggedTerms;
+
+      await refreshMetrics();
+    });
+
+    renderCharts();
+    refreshMetrics();
+  </script>
+</body>
+</html>
