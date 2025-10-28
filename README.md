@@ -12,14 +12,7 @@ Medical Sentiment Analysis is an end-to-end NLP system that classifies clinical 
 
 ## 🔴 Demo
 
-<p align="center">
-  <video src="https://github.com/user-attachments/assets/71154c8a-f665-4bc6-9ee1-4998f2c30713"
-         width="480"
-         controls
-         muted
-         playsinline>
-  </video>
-</p>
+https://github.com/user-attachments/assets/95b325e0-7d2e-475c-a6a5-9f81c8c7cdd3
 
 **What the demo shows:**
 
